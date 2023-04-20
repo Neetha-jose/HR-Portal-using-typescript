@@ -26,26 +26,26 @@ const getAllEmployeesById = async (req: Request, res: Response) => {
 const AddEmployees = async (req: Request, res: Response) => {
     try {
 
-        console.log("first")
-        const newUser = {
-            Id: req.body.Id,
-            name: req.body.name,
-            Email: req.body.Email,
-            PhoneNo: req.body.PhoneNo,
-            Address: req.body.Address,
-        };
-        console.log(newUser)
+        console.log("req.body", req.body)
+        // const newUser = {
+        //     Id: req.body.Id,
+        //     name: req.body.name,
+        //     Email: req.body.Email,
+        //     PhoneNo: req.body.PhoneNo,
+        //     Address: req.body.Address,
+        // };
+        // console.log(newUser)
         const response = await sp.web.lists.getByTitle("Users").items.add({
-            name: newUser.name,
-            Email: newUser.Email,
-            PhoneNo: newUser.PhoneNo,
-            Address: newUser.Address,
+            name: req.body.name,
+            Email: req.body.email,
+            PhoneNo: req.body.phone,
+            Address: req.body.address,
 
         });
-        console.log(response.data.Id);
+        // console.log(response.data.Id);
         const folderId = response.data.Id;
         const newFolderName = `${folderId}`;
-        const documentLibraryName = `DocumentNeetha`;
+        const documentLibraryName = `UserDetails`;
         const documentLibrary = sp.web.lists.getByTitle(documentLibraryName);
         await documentLibrary.rootFolder.folders
             .addUsingPath(newFolderName)
@@ -76,8 +76,39 @@ const deleteEmployee = async (req: Request, res: Response) => {
         res.status(500).send({ message: `Internal Server Error` });
     }
 };
+const updateSingleEmploy = async (req: Request, res: Response) => {
+    let id: number = Number.parseInt(req.params.id);
+    const { name, email, phone, address } = req.body;
+    console.log(id);
+    try {
+        if (isNaN(id)) {
+            res.status(400).json({
+                success: false,
+                message: "Invalid ID provided",
+            });
+            return;
+        }
+        const updateEmploy = {
+            name: name,
+            Email: email,
+            PhoneNo: phone,
+            Address:address
+
+        };
+        const employ = await sp.web.lists
+            .getByTitle("Users").items.getById(id).update(updateEmploy);
+        res.status(200).json({
+            success: true,
+            message: " Succesfully Updated Employee Details",
+            employ
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal server error " });
+    }
+}
 export {
-    getAllEmployees, getAllEmployeesById, deleteEmployee,AddEmployees
+    getAllEmployees, getAllEmployeesById, deleteEmployee, AddEmployees,updateSingleEmploy
 }
 
 
@@ -124,6 +155,6 @@ export {
 //         user.address = req.body.address;
 //         res.send("User updated successfully");
 //     } else {
-//         res.status(404).send("User not found");
+//         res.status(404).send("User not found");first
 //     }
 // };

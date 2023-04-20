@@ -33,9 +33,9 @@ SpfxConnection()
 // getAllItems()
 
 app.use("/get", router)
-app.use("/get/:id", router)
-app.use("/deleteuser/:id", router)
-app.use("/adduser", router)
+// app.use("/get/:id", router)
+// app.use("/", router)
+// app.use("/adduser", router)
 
 
 // app.get('/', (req: express.Request, res: express.Response) => {
