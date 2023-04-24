@@ -1,5 +1,8 @@
 import express from 'express';
+import fileUpload, { UploadedFile } from "express-fileupload";
 import bodyParser from "body-parser";
+import morgan from 'morgan';
+
 const app = express()
 const PORT = 5000
 import cors from "cors";
@@ -19,29 +22,13 @@ const SpfxConnection = () => {
         },
     });
 }
-
+app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
-
+app.use(fileUpload());
 app.use(cors({ origin: "*" }));
-
 SpfxConnection()
-// const getAllItems = async () => {
-//     const response = await sp.web.lists.getByTitle("Users").items.getAll()
-//     console.log(response)
-// }
-// getAllItems()
-
 app.use("/get", router)
-// app.use("/get/:id", router)
-// app.use("/", router)
-// app.use("/adduser", router)
-
-
-// app.get('/', (req: express.Request, res: express.Response) => {
-//     res.send('hi');
-// });
-
 app.listen(5000, () =>
     console.log(`Server runing on port http://localhost:${PORT}"`),
 );
